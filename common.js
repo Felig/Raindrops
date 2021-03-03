@@ -91,57 +91,7 @@ function changeDropFallSpeed() {
   }
 }
 
-// Function to change the score
-function changeScore() {
-  const countDropsOnWindow = document.querySelectorAll('.drop').length;
 
-  let timeShowWrongAnswerText = 600;
-  let addScore = currentScore + baseChangeScore + countCorrectAnswer;
-  let removeScore = currentScore - baseChangeScore - countCorrectAnswer;
-
-  if (isCorrectAnswer || isCorrectBonusAnswer) {
-    if (isCorrectAnswer) {
-      if (isSoundOn) {
-        correctAnswerSound.currentTime = 0;
-        correctAnswerSound.play();
-      }
-      currentScore = addScore;
-    }
-    if (isCorrectBonusAnswer) {
-      if (isSoundOn) {
-        correctBonusAnswerSound.currentTime = 0;
-        correctBonusAnswerSound.play();
-      }
-      currentScore = addScore + countDropsOnWindow * baseChangeScore;
-      bonusAnswerText.innerHTML = `+${baseChangeScore + countCorrectAnswer +
-        countDropsOnWindow * baseChangeScore
-        }`;
-      bonusAnswerText.classList.add('show');
-      setTimeout(() => {
-        bonusAnswerText.classList.remove('show');
-      }, timeShowWrongAnswerText);
-    }
-    scoreBoard.innerHTML = currentScore;
-    countCorrectAnswer++;
-    changeDropFallSpeed();
-  } else {
-    if (isSoundOn) {
-      wrongAnswerSound.currentTime = 0;
-      wrongAnswerSound.play();
-    }
-    if (removeScore > 0) {
-      currentScore = removeScore;
-    } else {
-      currentScore = 0;
-    }
-    scoreBoard.innerHTML = currentScore;
-    wrongAnswerText.innerHTML = -baseChangeScore - countCorrectAnswer;
-    wrongAnswerText.classList.add('show');
-    setTimeout(() => {
-      wrongAnswerText.classList.remove('show');
-    }, timeShowWrongAnswerText);
-  }
-}
 
 // Function for running the splash animation
 function playSplashAnimation(index, elementName, splashName) {
@@ -159,219 +109,6 @@ function playSplashAnimation(index, elementName, splashName) {
   }, timeShowDropSplash);
 }
 
-// Function to get a best score
-function getBestScore() {
-  if (localStorage.getItem('best-score') === null) {
-    bestScoreBoard.textContent = 0;
-  } else {
-    bestScoreBoard.textContent = localStorage.getItem('best-score');
-  }
-}
-
-// Function to set the best score
-function setBestScore() {
-  if (currentScore > Number(localStorage.getItem('best-score'))) {
-    localStorage.setItem('best-score', currentScore);
-  }
-}
-
-// Function for checking the entered answer
-function checkAnswer() {
-  const allDrops = document.querySelectorAll('.drop');
-  const bonusDrop = document.querySelector('.bonus-drop');
-
-  let index = resultArray.indexOf(Number(enteredAnswer));
-
-  if (resultArray.length === 0) {
-    return;
-  }
-  if (index !== -1) {
-    if (dropsArray[index].classList.contains('bonus-drop')) {
-      isCorrectBonusAnswer = true;
-      changeScore();
-      playSplashAnimation(index, 'bonus-drop', 'bonus-drop-splash');
-      for (let i = 0; i < dropsArray.length; i++) {
-        playSplashAnimation(i, 'drop', 'drop-splash');
-      }
-      gameField.removeChild(bonusDrop);
-      allDrops.forEach((allDrops) => {
-        gameField.removeChild(allDrops);
-      });
-      dropsArray.splice(0, dropsArray.length);
-      resultArray.splice(0, resultArray.length);
-    } else if (dropsArray[index].classList.contains('drop')) {
-      isCorrectAnswer = true;
-      changeScore();
-      playSplashAnimation(index, 'drop', 'drop-splash');
-      dropsArray[index].remove();
-      resultArray.splice(index, 1);
-      dropsArray.splice(index, 1);
-    }
-  } else {
-    changeScore();
-  }
-
-  isCorrectBonusAnswer = false;
-  isCorrectAnswer = false;
-}
-
-// Function to update the value on the display
-function updateDisplay(number) {
-  if (display.value.length < 4) {
-    if (display.value == 0) {
-      display.value = number;
-    } else {
-      display.value += number;
-    }
-  }
-}
-
-// Function for cleaning the display
-function clearDisplay() {
-  display.value = '';
-}
-
-// Function for deleting the last digit on the display
-function deleteDigit() {
-  display.value = display.value.slice(0, display.value.length - 1);
-}
-
-// Function for saving the value of the entered answer
-function enterAnswer() {
-  if (display.value !== '') {
-    enteredAnswer = display.value;
-    clearDisplay();
-    checkAnswer();
-  }
-}
-
-// Function for entering and processing operations
-function enterOperation(operation) {
-  switch (operation) {
-    case 'clear':
-      clearDisplay();
-      break;
-    case 'delete':
-      deleteDigit();
-      break;
-    case 'enter':
-      enterAnswer();
-      break;
-  }
-}
-
-// Hang the event on the keyboard wrapper and find out which button was pressed
-keyboard.onclick = function (event) {
-  let number = event.target.getAttribute('data-number');
-  let operation = event.target.getAttribute('data-operation');
-
-  if (number) {
-    updateDisplay(number);
-  } else if (operation) {
-    enterOperation(operation);
-  }
-};
-
-// Function for using the number block on the physical keyboard
-function useNumpad(event) {
-  if (display.value.length < 4) {
-    switch (event.code) {
-      case 'Numpad0':
-      case 'Digit0':
-        if (display.value == 0) {
-          display.value = 0;
-        } else {
-          display.value += 0;
-        }
-        break;
-      case 'Numpad1':
-      case 'Digit1':
-        if (display.value == 0) {
-          display.value = 1;
-        } else {
-          display.value += 1;
-        }
-        break;
-      case 'Numpad2':
-      case 'Digit2':
-        if (display.value == 0) {
-          display.value = 2;
-        } else {
-          display.value += 2;
-        }
-        break;
-      case 'Numpad3':
-      case 'Digit3':
-        if (display.value == 0) {
-          display.value = 3;
-        } else {
-          display.value += 3;
-        }
-        break;
-      case 'Numpad4':
-      case 'Digit4':
-        if (display.value == 0) {
-          display.value = 4;
-        } else {
-          display.value += 4;
-        }
-        break;
-      case 'Numpad5':
-      case 'Digit5':
-        if (display.value == 0) {
-          display.value = 5;
-        } else {
-          display.value += 5;
-        }
-        break;
-      case 'Numpad6':
-      case 'Digit6':
-        if (display.value == 0) {
-          display.value = 6;
-        } else {
-          display.value += 6;
-        }
-        break;
-      case 'Numpad7':
-      case 'Digit7':
-        if (display.value == 0) {
-          display.value = 7;
-        } else {
-          display.value += 7;
-        }
-        break;
-      case 'Numpad8':
-      case 'Digit8':
-        if (display.value == 0) {
-          display.value = 8;
-        } else {
-          display.value += 8;
-        }
-        break;
-      case 'Numpad9':
-      case 'Digit9':
-        if (display.value == 0) {
-          display.value = 9;
-        } else {
-          display.value += 9;
-        }
-        break;
-    }
-  }
-  switch (event.code) {
-    case 'Backspace':
-      clearDisplay();
-      break;
-    case 'NumpadDecimal':
-    case 'Delete':
-      deleteDigit();
-      break;
-    case 'NumpadEnter':
-    case 'Enter':
-      enterAnswer();
-      break;
-  }
-}
 
 // Function for getting a random value, taking into account the received range
 function getRandomValue(min, max) {
@@ -478,27 +215,7 @@ function fillDropValues(firstOperand, operator, secondOperand) {
   secondOperand.innerHTML = secondValue;
 }
 
-// Function for calculating and displaying game statistics
-function showGameStatistics() {
-  const convertMsToMin = 60000;
-  const convertToPercent = 100;
 
-  equationsPerMinute.innerHTML = Math.round(
-    countCorrectAnswer / (performance.now() / convertMsToMin)
-  );
-  totalEquations.innerHTML = countCorrectAnswer;
-  overall.innerHTML = `${Math.ceil(
-    (countCorrectAnswer / countDrop) * convertToPercent
-  )}%`;
-  scorePoints.innerHTML = currentScore;
-
-  gameStatistic.classList.add('visible');
-  if (isSoundOn) {
-    pauseSound();
-    gameOverSound.play();
-  }
-  setBestScore();
-}
 
 // Function for animating the fall of a raindrop
 function animationFallDrop(dropElement) {
@@ -632,7 +349,7 @@ function checkTouchToWave() {
     }
     if (countDropFallen >= healthPoints) {
       setTimeout(() => {
-        showGameStatistics();
+        // showGameStatistics();
         isGameOver = true;
         document
           .querySelectorAll('.drop')
@@ -695,43 +412,13 @@ function create(ElementName) {
   }
 }
 
-// Function for getting the status of the sound
-function getStatusSound() {
-  if (
-    localStorage.getItem('is-sound-on') === null ||
-    localStorage.getItem('is-sound-on') === 'undefined' ||
-    localStorage.getItem('is-sound-on') === 'true'
-  ) {
-    isSoundOn = true;
-  } else {
-    isSoundOn = false;
-  }
-}
 
-// Function for setting the sound status
-function setStatusSound() {
-  localStorage.setItem('is-sound-on', isSoundOn);
-}
-
-// Function for update the sound button style
-function updateStyleSoundButton() {
-  if (isSoundOn) {
-    soundButton.classList.remove('sound-off');
-  } else {
-    soundButton.classList.add('sound-off');
-  }
-}
 
 // Function to start the game
 function startGame() {
-  getBestScore(); // Getting the best score before the start
+
   currentScore = 0; // Set the value of the current rating to zero
-  getStatusSound();
-  setStatusSound();
-  updateStyleSoundButton();
-  if (isSoundOn) {
-    playSound(); // Turning on the sound
-  }
+
   create('drop'); // Starting the creation of raindrops
   setTimeout(() => {
     if (isGameOver) {
@@ -741,31 +428,6 @@ function startGame() {
   }, setRandomTimeCreateBonusDrop());
 }
 
-// Function to start playing sounds
-function playSound() {
-  rainSound.play();
-  seaSound.play();
-}
-
-// Function for stopping the playback of sounds
-function pauseSound() {
-  rainSound.pause();
-  seaSound.pause();
-}
-
-// Hang an event handler on the sound button
-soundButton.addEventListener('click', () => {
-  isSoundOn = !isSoundOn;
-  setStatusSound();
-
-  if (isSoundOn) {
-    playSound();
-    soundButton.classList.toggle('sound-off');
-  } else {
-    pauseSound();
-    soundButton.classList.toggle('sound-off');
-  }
-});
 
 // Enable fullscreen mode by pressing the corresponding button
 fullscreenButton.addEventListener('click', () => {
@@ -776,7 +438,6 @@ fullscreenButton.addEventListener('click', () => {
   }
 });
 
-// Listening to the press of the physical keyboard
-window.addEventListener('keydown', useNumpad);
+
 
 startGame(); // Running the game
