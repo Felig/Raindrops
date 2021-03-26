@@ -22,7 +22,7 @@ body {
   position: relative;
   flex: 2.5;
   overflow: hidden;
-  background: radial-gradient( circle, rgba(255, 255, 240, 1) 15%, rgba(163, 215, 232, 1) 60%, rgba(100, 172, 194, 1) 100%);
+  background: rgb(187, 226, 238);
 }
 
 .game-control {
@@ -51,8 +51,6 @@ body {
   font-weight: 600;
   font-family: 'Heebo', sans-serif;
   background: #ffffffaf;
-  border-bottom-right-radius: 2rem;
-  border-bottom-left-radius: 2rem;
 }
 
 .score, .best-score {
@@ -67,10 +65,7 @@ body {
   height: 55%;
   min-height: 300px;
   max-height: 370px;
-  background: #e7dfc2;
-  border: 2px solid #f0ead5;
-  border-radius: 0.4rem;
-  box-shadow: 0 3px 10px 3px rgba(0, 0, 0, 0.15);
+  background: #f0ead5;
   user-select: none;
 }
 
@@ -94,8 +89,6 @@ body {
   font-weight: 900;
   font-family: 'Heebo', sans-serif;
   border-bottom-width: 0;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   border: 1px solid #aeaca4;
   user-select: none;
 }
