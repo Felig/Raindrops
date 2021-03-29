@@ -23,6 +23,7 @@ const scorePoints = document.querySelector('.score-points');
 const totalEquations = document.querySelector('.total-equations');
 const equationsPerMinute = document.querySelector('.equations-per-minute');
 const overall = document.querySelector('.overall');
+const startMenu = document.querySelector('.preload');
 
 // Minimum and maximum values for random drop position
 const limitPositionValue = {
@@ -733,6 +734,7 @@ function updateStyleSoundButton() {
 
 // Function to start the game
 function startGame() {
+  startMenu.classList.add("hide");
   getBestScore(); // Getting the best score before the start
   currentScore = 0; // Set the value of the current rating to zero
   //getStatusSound();
@@ -788,4 +790,7 @@ fullscreenButton.addEventListener('click', () => {
 // Listening to the press of the physical keyboard
 window.addEventListener('keydown', useNumpad);
 
-startGame(); // Running the game
+//startGame(); // Running the game
+
+
+
