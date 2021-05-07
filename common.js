@@ -24,6 +24,8 @@ const totalEquations = document.querySelector('.total-equations');
 const equationsPerMinute = document.querySelector('.equations-per-minute');
 const overall = document.querySelector('.overall');
 const startMenu = document.querySelector('.preload');
+const gameOverTutorial = document.querySelector('.game-over-tutorial');
+const btnWrapper = document.getElementsByClassName('number');
 
 // Minimum and maximum values for random drop position
 const limitPositionValue = {
@@ -78,6 +80,7 @@ let isSoundOn; // Flag to determine whether sounds are to be played
 let isCorrectAnswer; // Flag to determine the correctness of the answer
 let isCorrectBonusAnswer; // Flag to determine the correctness of the bonus answer
 let isGameOver = false; // Flag to determine the end of the game
+let TutorialMode = false; // Flag to determine turn on/off for tutorial
 
 // Function for changing the fall speed of the raindrop
 function changeDropFallSpeed() {
@@ -460,9 +463,9 @@ keyboard.onclick = function (event) {
   let number = event.target.getAttribute('data-number');
   let operation = event.target.getAttribute('data-operation');
 
-  if (number) {
+  if (number && TutorialMode === false) {
     updateDisplay(number);
-  } else if (operation) {
+  } else if (operation && TutorialMode === false) {
     enterOperation(operation);
   }
 };
@@ -639,15 +642,20 @@ function checkTouchToWave() {
       fallInSeaSound.play();
     }
     if (countDropFallen >= healthPoints) {
-      setTimeout(() => {
-        showGameStatistics();
-        isGameOver = true;
-        document
-          .querySelectorAll('.drop')
-          .forEach(() =>
-            gameField.removeChild(document.querySelector('.drop'))
-          );
-      }, delayShowStatistics);
+      if (TutorialMode === true) {
+        gameOverTutorial.classList.add('visible');
+      }
+      else {
+        setTimeout(() => {
+          showGameStatistics();
+          isGameOver = true;
+          document
+            .querySelectorAll('.drop')
+            .forEach(() =>
+              gameField.removeChild(document.querySelector('.drop'))
+            );
+        }, delayShowStatistics);
+      }
     }
   }
 
@@ -735,6 +743,7 @@ function updateStyleSoundButton() {
 // Function to start the game
 function startGame() {
   startMenu.classList.add("hide");
+  gameOverTutorial.classList.add("hide");
   getBestScore(); // Getting the best score before the start
   currentScore = 0; // Set the value of the current rating to zero
   //getStatusSound();
@@ -793,4 +802,141 @@ window.addEventListener('keydown', useNumpad);
 //startGame(); // Running the game
 
 
+//Tutorial part
+function createDropTutorial(elementName, position, value1, symbolOperand, value2) {
+  const thisName = elementName;
+  const dropElement = document.createElement('div');
+  const firstOperand = document.createElement('span');
+  const operator = document.createElement('span');
+  const secondOperand = document.createElement('span');
 
+  dropElement.className = `${thisName}`;
+  firstOperand.className = `operand first-operand-${thisName}`;
+  operator.className = 'operator';
+  secondOperand.className = `operand second-operand-${thisName}`;
+  dropElement.style.left = `${position}%`;
+  dropElement.append(firstOperand, operator, secondOperand);
+  firstOperand.innerHTML = value1;
+  operator.innerHTML = symbolOperand;
+  secondOperand.innerHTML = value2;
+  resultArray.push(getResult(value1, symbolOperand, value2));
+  gameField.append(dropElement);
+  dropsArray.push(dropElement);
+  animationFallDrop(dropElement);
+  checkTouchToWave();
+}
+
+function downWave() {
+  const liftWaveCoefficient = 0.25;
+  const lowWaveCoefficient = 1.9;
+  wave.style.height = `${wave.offsetHeight - wave.offsetHeight *
+    liftWaveCoefficient * lowWaveCoefficient
+    }px`;
+  wave2.style.height = `${wave2.offsetHeight - wave2.offsetHeight *
+    liftWaveCoefficient * lowWaveCoefficient
+    }px`;
+}
+
+function playSceneOne() {
+  return new Promise((resolve) => {
+    durationAnimate = 15000;
+    createDropTutorial('drop', 40, 2, '+', 2);
+
+    setTimeout(() => {
+      document.getElementById('4').classList.add('active');
+      display.value = 4;
+      enteredAnswer = display.value;
+    }, 2500);
+    setTimeout(() => {
+      document.getElementById('4').classList.remove('active');
+    }, 2700);
+    setTimeout(() => {
+      document.getElementById('enter').classList.add('active');
+      checkAnswer();
+      display.value = '';
+    }, 3700);
+    setTimeout(() => {
+      document.getElementById('enter').classList.remove('active');
+    }, 3900);
+    setTimeout(() => {
+      resolve();
+    }, 4900);
+  });
+}
+
+function playSceneTwo() {
+  return new Promise((resolve) => {
+    durationAnimate = 20000;
+    createDropTutorial('drop', 5, 14, '-', 7);
+
+    setTimeout(() => {
+      createDropTutorial('drop', 45, 4, '+', 8);
+    }, 1500);
+    setTimeout(() => {
+      createDropTutorial('drop', 25, 28, '÷', 7);
+    }, 3000);
+    setTimeout(() => {
+      createDropTutorial('drop', 78, 5, '×', 5);
+    }, 4500);
+    setTimeout(() => {
+      createDropTutorial('bonus-drop', 60, 81, '÷', 9);
+    }, 6000);
+    setTimeout(() => {
+      document.getElementById('9').classList.add('active');
+      display.value = 9;
+      enteredAnswer = display.value;
+    }, 8000);
+    setTimeout(() => {
+      document.getElementById('9').classList.remove('active');
+    }, 8200);
+    setTimeout(() => {
+      document.getElementById('enter').classList.add('active');
+      checkAnswer();
+      display.value = '';
+    }, 10200);
+    setTimeout(() => {
+      document.getElementById('enter').classList.remove('active');
+    }, 10400);
+    setTimeout(() => {
+      resolve();
+    }, 11400);
+  });
+}
+
+function playSceneThree() {
+  return new Promise((resolve) => {
+    durationAnimate = 8000;
+    createDropTutorial('drop', 10, 7, '-', 5);
+
+    setTimeout(() => {
+      createDropTutorial('drop', 40, 9, '÷', 3);
+    }, 1500);
+    setTimeout(() => {
+      createDropTutorial('drop', 70, 4, '×', 2);
+    }, 3000);
+    setTimeout(() => {
+      resolve();
+    }, 10000);
+  });
+}
+
+function playTutorial() {
+  startMenu.classList.add("hide");
+  // for (let i = 0; i < btnWrapper.length; i++) {
+  //   btnWrapper[i].removeAttribute('data-number');
+  // }
+  TutorialMode = true;
+  playSceneOne()
+    .then(() => playSceneTwo())
+    .then(() => playSceneThree())
+    .then(() => {
+      isGameOver = false;
+      countDropFallen = 0;
+      currentScore = 0;
+      scoreBoard.innerHTML = '0';
+      TutorialMode = false;
+      downWave();
+      // hideGameOverBoard();
+      // playTutorial();
+    });
+}

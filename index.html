@@ -10,11 +10,24 @@
 
 <body>
   <div class="game-container">
-    <div class="preload">
-      <h2 class="title">New game</h2>
-      <button class="reload" onClick="startGame()">
-        Start
+    <div class="game-over-tutorial">
+      <h1 class="game-over-text">Game over</h1>
+      <button class="preloadButton" onClick="startGame()">
+        New game
       </button>
+      <button class="preloadButton" onClick="window.location.reload()">
+        Menu
+      </button>
+    </div>
+    <div class="preload">
+      <h2 class="title">Game menu</h2>
+      <button class="preloadButton" onClick="startGame()">
+        New game
+      </button>
+      <button class="preloadButton" onClick="playTutorial()">
+        Tutorial
+      </button>
+
     </div>
     <div class="game-statistic">
 
@@ -28,7 +41,7 @@
       <h2 class="title">Accuracy</h2>
       <p class="description">Overall: <span class="overall"></span></p>
       <p class="score-text"><span class="score-points"></span> points</p>
-      <button class="reload" onClick="window.location.reload()">
+      <button class="preloadButton" onClick="window.location.reload()">
         Continue
       </button>
     </div>
@@ -50,15 +63,15 @@
         <div class="wrapper-keyboard">
           <button data-number="7" class="number btn">7</button>
           <button data-number="8" class="number btn">8</button>
-          <button data-number="9" class="number btn">9</button>
+          <button data-number="9" class="number btn" id="9">9</button>
           <button data-operation="clear" class="operation btn btn-equal">clear</button>
-          <button data-number="4" class="number btn">4</button>
+          <button data-number="4" class="number btn" id="4">4</button>
           <button data-number="5" class="number btn">5</button>
           <button data-number="6" class="number btn">6</button>
           <button data-number="1" class="number btn">1</button>
           <button data-number="2" class="number btn">2</button>
           <button data-number="3" class="number btn">3</button>
-          <button data-operation="enter" class="operation btn btn-equal">enter</button>
+          <button data-operation="enter" class="operation btn btn-equal" id="enter">enter</button>
           <button data-number="0" class="number btn btn-long">0</button>
           <button data-operation="delete" class="operation btn">delete</button>
         </div>
