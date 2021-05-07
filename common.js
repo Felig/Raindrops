@@ -472,7 +472,7 @@ keyboard.onclick = function (event) {
 
 // Function for using the number block on the physical keyboard
 function useNumpad(event) {
-  if (display.value.length < 4) {
+  if (display.value.length < 4 && TutorialMode === false) {
     switch (event.code) {
       case 'Numpad0':
       case 'Digit0':
