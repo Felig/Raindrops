@@ -25,6 +25,18 @@ body {
   background: linear-gradient(to bottom, #6ec4fd, #b7e8fa, #ffffff);
 }
 
+.description-text {
+  /* visibility: hidden; */
+  padding: 15px;
+  color: #fff;
+  font-size: 2em;
+  position: absolute;
+  width: 100%;
+  height: auto;
+  z-index: 3;
+  background-color: #0e121475;
+}
+
 .game-control {
   position: relative;
   display: flex;
@@ -53,7 +65,7 @@ body {
   background: #ffffff75;
 }
 
-.score, .best-score {
+.score, .best-score, .life-count {
   color: #ec4f00;
 }
 
@@ -428,6 +440,7 @@ body {
 
 .preloadButton {
   margin-top: 1rem;
+  width: 200px;
   padding: 0.5rem 1rem;
   color: white;
   font-size: 2rem;

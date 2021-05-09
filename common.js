@@ -3,6 +3,7 @@ const display = document.getElementById('display');
 const keyboard = document.querySelector('.wrapper-keyboard');
 const gameField = document.querySelector('.game-field');
 const scoreBoard = document.querySelector('.score');
+const lifeBoard = document.querySelector('.life-count');
 const bestScoreBoard = document.querySelector('.best-score');
 const wrongAnswerText = document.querySelector('.wrong-answer');
 const bonusAnswerText = document.querySelector('.bonus-answer');
@@ -26,6 +27,7 @@ const overall = document.querySelector('.overall');
 const startMenu = document.querySelector('.preload');
 const gameOverTutorial = document.querySelector('.game-over-tutorial');
 const btnWrapper = document.getElementsByClassName('number');
+const description = document.querySelector('.description-text');
 
 // Minimum and maximum values for random drop position
 const limitPositionValue = {
@@ -65,7 +67,7 @@ const creationBonusDropInterval = {
 
 let resultArray = []; // Array for storing the results of calculation of drops
 let dropsArray = []; // Array for storing the list of drop items
-let durationAnimate = 9000; // Animation duration
+let durationAnimate = 15000; // Animation duration
 let creationDropInterval = 3000; // Drop creation interval
 let currentScore = 0; // Current score value
 let baseChangeScore = 10; // The base value of the score change
@@ -81,6 +83,22 @@ let isCorrectAnswer; // Flag to determine the correctness of the answer
 let isCorrectBonusAnswer; // Flag to determine the correctness of the bonus answer
 let isGameOver = false; // Flag to determine the end of the game
 let TutorialMode = false; // Flag to determine turn on/off for tutorial
+let descriptionText = {
+  one: `Demo mode - Step 1
+        <br>
+        Solve examples in a drop until it falls. Enter your answer on the keyboard and press Enter.
+        <br>
+        Wrong answers will decrease the score.`,
+  two: `Demo mode - Step 2
+        <br>
+        When solving the green drop, all drops disappear.        
+        <br>
+        You get 10 points for every drop.`,
+  three: `Demo mode - Step 3
+        <br>
+        When three drops fall, the game is over.`,
+};
+
 
 // Function for changing the fall speed of the raindrop
 function changeDropFallSpeed() {
@@ -94,8 +112,6 @@ function changeDropFallSpeed() {
     creationDropInterval = 3000;
   }
 }
-
-
 
 // Function for running the splash animation
 function playSplashAnimation(index, elementName, splashName) {
@@ -556,18 +572,20 @@ function useNumpad(event) {
         break;
     }
   }
-  switch (event.code) {
-    case 'Backspace':
-      clearDisplay();
-      break;
-    case 'NumpadDecimal':
-    case 'Delete':
-      deleteDigit();
-      break;
-    case 'NumpadEnter':
-    case 'Enter':
-      enterAnswer();
-      break;
+  if (TutorialMode === false) {
+    switch (event.code) {
+      case 'Backspace':
+        clearDisplay();
+        break;
+      case 'NumpadDecimal':
+      case 'Delete':
+        deleteDigit();
+        break;
+      case 'NumpadEnter':
+      case 'Enter':
+        enterAnswer();
+        break;
+    }
   }
 }
 
@@ -609,7 +627,7 @@ function checkTouchToWave() {
     bonusDropCoordinateY >= waveCoordinateY
   ) {
     countDropFallen++;
-
+    lifeBoard.innerHTML = healthPoints - countDropFallen;
     wave.animate(
       [
         {
@@ -744,8 +762,10 @@ function updateStyleSoundButton() {
 function startGame() {
   startMenu.classList.add("hide");
   gameOverTutorial.classList.add("hide");
+  description.classList.add("hide");
   getBestScore(); // Getting the best score before the start
   currentScore = 0; // Set the value of the current rating to zero
+  lifeBoard.innerHTML = healthPoints; // Set begin health
   //getStatusSound();
   //setStatusSound();
   //updateStyleSoundButton();
@@ -839,34 +859,36 @@ function downWave() {
 
 function playSceneOne() {
   return new Promise((resolve) => {
-    durationAnimate = 15000;
+    durationAnimate = 20000;
     createDropTutorial('drop', 40, 2, '+', 2);
+    description.innerHTML = descriptionText.one;
 
     setTimeout(() => {
       document.getElementById('4').classList.add('active');
       display.value = 4;
       enteredAnswer = display.value;
-    }, 2500);
+    }, 4500);
     setTimeout(() => {
       document.getElementById('4').classList.remove('active');
-    }, 2700);
+    }, 4700);
     setTimeout(() => {
       document.getElementById('enter').classList.add('active');
       checkAnswer();
       display.value = '';
-    }, 3700);
+    }, 5700);
     setTimeout(() => {
       document.getElementById('enter').classList.remove('active');
-    }, 3900);
+    }, 5900);
     setTimeout(() => {
       resolve();
-    }, 4900);
+    }, 7900);
   });
 }
 
 function playSceneTwo() {
   return new Promise((resolve) => {
     durationAnimate = 20000;
+    description.innerHTML = descriptionText.two;
     createDropTutorial('drop', 5, 14, '-', 7);
 
     setTimeout(() => {
@@ -906,6 +928,7 @@ function playSceneTwo() {
 function playSceneThree() {
   return new Promise((resolve) => {
     durationAnimate = 8000;
+    description.innerHTML = descriptionText.three;
     createDropTutorial('drop', 10, 7, '-', 5);
 
     setTimeout(() => {
@@ -925,6 +948,7 @@ function playTutorial() {
   // for (let i = 0; i < btnWrapper.length; i++) {
   //   btnWrapper[i].removeAttribute('data-number');
   // }
+  lifeBoard.innerHTML = healthPoints;
   TutorialMode = true;
   playSceneOne()
     .then(() => playSceneTwo())
