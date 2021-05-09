@@ -765,6 +765,7 @@ function startGame() {
   description.classList.add("hide");
   getBestScore(); // Getting the best score before the start
   currentScore = 0; // Set the value of the current rating to zero
+  durationAnimate = 15000;
   lifeBoard.innerHTML = healthPoints; // Set begin health
   //getStatusSound();
   //setStatusSound();
