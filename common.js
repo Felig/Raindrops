@@ -9,15 +9,15 @@ const wrongAnswerText = document.querySelector('.wrong-answer');
 const bonusAnswerText = document.querySelector('.bonus-answer');
 const wave = document.querySelector('.wave');
 const wave2 = document.querySelector('.wave-2');
+const ship = document.querySelector('.ship');
 const soundButton = document.getElementById('sound');
 const fullscreenButton = document.getElementById('fullscreen');
-const rainSound = document.querySelector('.rain-sound');
 const seaSound = document.querySelector('.sea-sound');
 const correctAnswerSound = document.querySelector('.correct-answer-sound');
 const correctBonusAnswerSound = document.querySelector('.correct-bonus-answer-sound');
 const wrongAnswerSound = document.querySelector('.wrong-answer-sound');
 const fallInSeaSound = document.querySelector('.fall-in-sea-sound');
-const popDropSound = document.querySelector('.pop-drop-sound');
+
 const gameOverSound = document.querySelector('.game-over-sound');
 const gameStatistic = document.querySelector('.game-statistic');
 const scorePoints = document.querySelector('.score-points');
@@ -118,10 +118,7 @@ function playSplashAnimation(index, elementName, splashName) {
   const timeShowDropSplash = 450;
 
   createSplash(index, elementName, splashName);
-  if (isSoundOn) {
-    popDropSound.currentTime = 0;
-    popDropSound.play();
-  }
+
   setTimeout(() => {
     try {
       gameField.removeChild(document.querySelector(`.${splashName}`));
@@ -650,10 +647,24 @@ function checkTouchToWave() {
       ],
       500
     );
+    ship.animate(
+      [
+        {
+          height: `${ship.offsetHeight}px`,
+        },
+        {
+          height: `${ship.offsetHeight + wave2.offsetHeight * liftWaveCoefficient}px`,
+        },
+      ],
+      500
+    );
+
 
     wave.style.height = `${wave.offsetHeight + wave.offsetHeight * liftWaveCoefficient
       }px`;
     wave2.style.height = `${wave2.offsetHeight + wave2.offsetHeight * liftWaveCoefficient
+      }px`;
+    ship.style.height = `${ship.offsetHeight + wave2.offsetHeight * liftWaveCoefficient
       }px`;
     if (isSoundOn) {
       fallInSeaSound.currentTime = 0;
@@ -729,34 +740,33 @@ function create(ElementName) {
   }
 }
 
+function pauseSound() {
+  seaSound.pause();
+}
 
 // Function for getting the status of the sound
-function getStatusSound() {
+function getDefaultStatusSound() {
   if (
     localStorage.getItem('is-sound-on') === null ||
     localStorage.getItem('is-sound-on') === 'undefined' ||
     localStorage.getItem('is-sound-on') === 'true'
   ) {
     isSoundOn = true;
-  } else {
-    isSoundOn = false;
-  }
-}
-
-// Function for setting the sound status
-function setStatusSound() {
-  localStorage.setItem('is-sound-on', isSoundOn);
-}
-
-// Function for update the sound button style
-function updateStyleSoundButton() {
-  if (isSoundOn) {
+    seaSound.play();
     soundButton.classList.remove('sound-off');
   } else {
+    isSoundOn = false;
+    seaSound.pause();
     soundButton.classList.add('sound-off');
   }
 }
 
+// Hang an event handler on the sound button
+soundButton.addEventListener('click', () => {
+  isSoundOn = !isSoundOn;
+  localStorage.setItem('is-sound-on', isSoundOn);
+  getDefaultStatusSound();
+});
 
 // Function to start the game
 function startGame() {
@@ -767,12 +777,7 @@ function startGame() {
   currentScore = 0; // Set the value of the current rating to zero
   durationAnimate = 15000;
   lifeBoard.innerHTML = healthPoints; // Set begin health
-  //getStatusSound();
-  //setStatusSound();
-  //updateStyleSoundButton();
-  if (isSoundOn) {
-    playSound(); // Turning on the sound
-  }
+  getDefaultStatusSound();
   create('drop'); // Starting the creation of raindrops
   setTimeout(() => {
     if (isGameOver) {
@@ -781,32 +786,6 @@ function startGame() {
     create('bonus-drop'); // Starting the creation of bonus raindrops
   }, setRandomTimeCreateBonusDrop());
 }
-
-// Function to start playing sounds
-function playSound() {
-  rainSound.play();
-  seaSound.play();
-}
-
-// Function for stopping the playback of sounds
-function pauseSound() {
-  rainSound.pause();
-  seaSound.pause();
-}
-
-// Hang an event handler on the sound button
-soundButton.addEventListener('click', () => {
-  isSoundOn = !isSoundOn;
-  setStatusSound();
-
-  if (isSoundOn) {
-    playSound();
-    soundButton.classList.toggle('sound-off');
-  } else {
-    pauseSound();
-    soundButton.classList.toggle('sound-off');
-  }
-});
 
 // Enable fullscreen mode by pressing the corresponding button
 fullscreenButton.addEventListener('click', () => {
@@ -854,6 +833,9 @@ function downWave() {
     liftWaveCoefficient * lowWaveCoefficient
     }px`;
   wave2.style.height = `${wave2.offsetHeight - wave2.offsetHeight *
+    liftWaveCoefficient * lowWaveCoefficient
+    }px`;
+  ship.style.height = `${ship.offsetHeight - wave2.offsetHeight *
     liftWaveCoefficient * lowWaveCoefficient
     }px`;
 }
@@ -946,9 +928,7 @@ function playSceneThree() {
 
 function playTutorial() {
   startMenu.classList.add("hide");
-  // for (let i = 0; i < btnWrapper.length; i++) {
-  //   btnWrapper[i].removeAttribute('data-number');
-  // }
+  getDefaultStatusSound();
   lifeBoard.innerHTML = healthPoints;
   TutorialMode = true;
   playSceneOne()
@@ -961,7 +941,6 @@ function playTutorial() {
       scoreBoard.innerHTML = '0';
       TutorialMode = false;
       downWave();
-      // hideGameOverBoard();
-      // playTutorial();
+      pauseSound();
     });
 }

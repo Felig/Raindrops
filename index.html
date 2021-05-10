@@ -49,6 +49,7 @@
       <div class="description-text"></div>
       <span class="wrong-answer">-10</span>
       <span class="bonus-answer">+10</span>
+      <div class="ship"></div>
       <div class="wave"></div>
       <div class="wave wave-2"></div>
     </div>
@@ -82,7 +83,12 @@
       <button id="fullscreen" class="btn-control fullscreen">⛶</button>
     </div>
   </div>
-
+  <audio loop src="./sounds/sea.mp3" type="audio/mp3" class="sea-sound"></audio>
+  <audio src="./sounds/correct-answer.mp3" type="audio/mp3" class="correct-answer-sound"></audio>
+  <audio src="./sounds/correct-bonus-answer.mp3" type="audio/mp3" class="correct-bonus-answer-sound"></audio>
+  <audio src="./sounds/wrong-answer.mp3" type="audio/mp3" class="wrong-answer-sound"></audio>
+  <audio src="./sounds/fall-in-sea.mp3" type="audio/mp3" class="fall-in-sea-sound"></audio>
+  <audio src="./sounds/game-over.mp3" type="audio/mp3" class="game-over-sound"></audio>
   <script src="./common.js"></script>
 </body>
 
