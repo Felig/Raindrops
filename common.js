@@ -766,6 +766,7 @@ function getDefaultStatusSound() {
 soundButton.addEventListener('click', () => {
   isSoundOn = !isSoundOn;
   localStorage.setItem('is-sound-on', isSoundOn);
+  soundButton.blur()
   getDefaultStatusSound();
 });
 
