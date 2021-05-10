@@ -662,10 +662,11 @@ function checkTouchToWave() {
 
     wave.style.height = `${wave.offsetHeight + wave.offsetHeight * liftWaveCoefficient
       }px`;
-    wave2.style.height = `${wave2.offsetHeight + wave2.offsetHeight * liftWaveCoefficient
-      }px`;
     ship.style.height = `${ship.offsetHeight + wave2.offsetHeight * liftWaveCoefficient
       }px`;
+    wave2.style.height = `${wave2.offsetHeight + wave2.offsetHeight * liftWaveCoefficient
+      }px`;
+
     if (isSoundOn) {
       fallInSeaSound.currentTime = 0;
       fallInSeaSound.play();
@@ -832,10 +833,10 @@ function downWave() {
   wave.style.height = `${wave.offsetHeight - wave.offsetHeight *
     liftWaveCoefficient * lowWaveCoefficient
     }px`;
-  wave2.style.height = `${wave2.offsetHeight - wave2.offsetHeight *
+  ship.style.height = `${ship.offsetHeight - wave2.offsetHeight *
     liftWaveCoefficient * lowWaveCoefficient
     }px`;
-  ship.style.height = `${ship.offsetHeight - wave2.offsetHeight *
+  wave2.style.height = `${wave2.offsetHeight - wave2.offsetHeight *
     liftWaveCoefficient * lowWaveCoefficient
     }px`;
 }
@@ -922,7 +923,7 @@ function playSceneThree() {
     }, 3000);
     setTimeout(() => {
       resolve();
-    }, 10000);
+    }, 9000);
   });
 }
 
@@ -935,6 +936,10 @@ function playTutorial() {
     .then(() => playSceneTwo())
     .then(() => playSceneThree())
     .then(() => {
+      if (isSoundOn) {
+        pauseSound();
+        gameOverSound.play();
+      }
       isGameOver = false;
       countDropFallen = 0;
       currentScore = 0;
