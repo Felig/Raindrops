@@ -410,11 +410,7 @@ function checkAnswer() {
 
 // Function to get a best score
 function getBestScore() {
-  if (localStorage.getItem('best-score') === null) {
-    bestScoreBoard.textContent = 0;
-  } else {
-    bestScoreBoard.textContent = localStorage.getItem('best-score');
-  }
+  localStorage.getItem('best-score') === null ? bestScoreBoard.textContent = 0 : bestScoreBoard.textContent = localStorage.getItem('best-score');
 }
 
 // Function to set the best score
@@ -425,13 +421,19 @@ function setBestScore() {
 }
 
 // Function to update the value on the display
+// function updateDisplay(number) {
+//   if (display.value.length < 4) {
+//     if (display.value == 0) {
+//       display.value = number;
+//     } else {
+//       display.value += number;
+//     }
+//   }
+// }
+
 function updateDisplay(number) {
   if (display.value.length < 4) {
-    if (display.value == 0) {
-      display.value = number;
-    } else {
-      display.value += number;
-    }
+    display.value === 0 ? display.value = number : display.value += number;
   }
 }
 
@@ -709,7 +711,7 @@ function create(ElementName) {
   const operator = document.createElement('span');
   const secondOperand = document.createElement('span');
 
-  dropElement.className = `${thisName}`;
+  dropElement.className = thisName;
   firstOperand.className = `operand first-operand-${thisName}`;
   operator.className = 'operator';
   secondOperand.className = `operand second-operand-${thisName}`;
