@@ -422,9 +422,8 @@ function setBestScore() {
 
 //Function to update the value on the display
 function updateDisplay(number) {
-  if (display.value.length < 4) {
-    display.value == 0 ? display.value = number : display.value += number;
-  }
+  display.value == 0 ? display.value = number : display.value.length < 4 ? display.value += number : false;
+  
 }
 
 
